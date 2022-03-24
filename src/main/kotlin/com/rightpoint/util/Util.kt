@@ -1,4 +1,4 @@
-package com.rightpoint.util
+package com.localization.tool.util
 
 object Util {
 

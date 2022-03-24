@@ -1,14 +1,14 @@
 @file:JvmName("LanguageDiffUtil")
 
-package com.rightpoint
+package com.localization.tool
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
-import com.rightpoint.parser.CsvExporter
-import com.rightpoint.parser.CsvParser
-import com.rightpoint.parser.MissingStringsParser
+import com.localization.tool.parser.CsvExporter
+import com.localization.tool.parser.CsvParser
+import com.localization.tool.parser.MissingStringsParser
 
 fun main(vararg args: String) = LanguageDiffer().main(args.toList())
 

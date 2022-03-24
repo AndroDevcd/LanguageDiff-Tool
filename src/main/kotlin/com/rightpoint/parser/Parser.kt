@@ -1,7 +1,7 @@
-package com.rightpoint.parser
+package com.localization.tool.parser
 
-import com.rightpoint.util.Util
-import com.rightpoint.util.replaceNewLineWithStringVersion
+import com.localization.tool.util.Util
+import com.localization.tool.util.replaceNewLineWithStringVersion
 import java.io.File
 import java.nio.file.FileSystems
 import javax.xml.parsers.DocumentBuilder

@@ -1,6 +1,6 @@
 ## Android Strings Resource Language Diff tool
 In the event any additional languages are intended to be supported by your app.  
-You can use this strings diff tool to ensure all translations from english to the language in question are accounted for.
+You can use this strings-diff tool to ensure all translations from english to the language in question are accounted for.
 
 To use this tool simply first copy and paste the `language-diff-tool.jar` tool into the root directory of the current project you are attempting to apply language changes.
 

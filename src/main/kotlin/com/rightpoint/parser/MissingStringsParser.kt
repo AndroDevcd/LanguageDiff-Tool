@@ -1,4 +1,4 @@
-package com.rightpoint.parser
+package com.localization.tool.parser
 
 import java.io.File
 

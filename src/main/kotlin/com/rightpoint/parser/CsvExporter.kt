@@ -1,6 +1,6 @@
-package com.rightpoint.parser
+package com.localization.tool.parser
 
-import com.rightpoint.util.Util.NO_TRANSLATION
+import com.localization.tool.util.Util.NO_TRANSLATION
 import java.io.File
 
 class CsvExporter(

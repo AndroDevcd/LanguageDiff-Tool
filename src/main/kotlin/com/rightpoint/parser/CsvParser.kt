@@ -1,9 +1,9 @@
-package com.rightpoint.parser
+package com.localization.tool.parser
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import com.rightpoint.util.Util
-import com.rightpoint.util.Util.NO_TRANSLATION
-import com.rightpoint.util.getWordAccuracyPercent
+import com.localization.tool.util.Util
+import com.localization.tool.util.Util.NO_TRANSLATION
+import com.localization.tool.util.getWordAccuracyPercent
 import java.io.File
 import java.nio.file.FileSystems
 
