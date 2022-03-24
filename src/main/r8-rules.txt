@@ -1,0 +1,7 @@
+-dontobfuscate
+-allowaccessmodification
+-keepattributes SourceFile, LineNumberTable
+
+-keep class com.rightpoint.LanguageDiffUtil {
+	public static void main(java.lang.String[]);
+}

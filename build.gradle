@@ -1,0 +1,104 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.21'
+    }
+}
+
+apply plugin: 'org.jetbrains.kotlin.jvm'
+
+configurations {
+    r8
+}
+
+group 'com.rightpoint'
+version '0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    google()
+}
+
+dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("com.github.ajalt:clikt:2.7.1")
+    r8("com.android.tools:r8:2.1.75")
+    implementation("com.github.doyaaaaaken:kotlin-csv-jvm:0.15.2")
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+def fatJarProvider = tasks.register("fatJar", Jar) { task ->
+    task.dependsOn(configurations.named("runtimeClasspath"))
+    task.dependsOn(tasks.named("jar"))
+
+    task.classifier "fat"
+
+    manifest {
+        attributes 'Main-Class': 'com.rightpoint.LanguageDiffUtil'
+    }
+
+    def sourceClasses = sourceSets.main.output.classesDirs
+    task.inputs.files(sourceClasses)
+
+    task.doFirst {
+        task.from files(sourceClasses)
+        task.from configurations.runtimeClasspath.asFileTree.files.collect { zipTree(it) }
+        task.exclude '**/*.kotlin_metadata'
+        task.exclude '**/*.kotlin_module'
+        task.exclude '**/*.kotlin_builtins'
+        task.exclude '**/module-info.class'
+        task.exclude 'META-INF/maven/**'
+    }
+}
+
+def r8File = new File("$buildDir/libs/$archivesBaseName-r8.jar")
+
+def r8JarProvider = tasks.register("r8Jar", JavaExec) { task ->
+    task.dependsOn(configurations.named("runtimeClasspath"))
+    task.dependsOn(fatJarProvider.get())
+    task.outputs.file(r8File)
+    task.classpath(configurations.r8)
+    task.main = "com.android.tools.r8.R8"
+    task.args = [
+            "--release",
+            "--classfile",
+            "--output", r8File.toString(),
+            "--pg-conf", "src/main/r8-rules.txt",
+            "--lib", System.properties["java.home"].toString()
+    ]
+    doFirst {
+        task.args += fatJarProvider.get().archiveFile.get().getAsFile()
+    }
+}
+
+def binaryFile = new File("$buildDir/${archivesBaseName}.jar")
+
+def binaryJar = tasks.register("binaryJar") { task ->
+    task.dependsOn(r8JarProvider)
+    task.inputs.file(r8File)
+    task.outputs.file(binaryFile)
+    task.doLast {
+        binaryFile.parentFile.mkdirs()
+        binaryFile.delete()
+        binaryFile << "#!/bin/sh\n\nexec java \$JAVA_OPTS -jar \$0 \"\$@\"\n\n"
+        r8File.withInputStream { binaryFile.append(it) }
+        binaryFile.setExecutable(true, false)
+    }
+}
+
+tasks.named("assemble").configure { task ->
+    task.dependsOn(binaryJar)
+}
+
+artifacts {
+    archives file: binaryFile, name: "binary", type: "jar", builtBy: binaryJar, classifier: "binary"
+}
